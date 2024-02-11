@@ -1,0 +1,53 @@
+from PIL import Image
+import numpy as np
+import os
+
+def encrypt_image(image_path, shift):
+    image = Image.open(image_path)
+    pixels = np.array(image)
+    height, width, channels = pixels.shape
+
+    for i in range(height):
+        for j in range(width):
+            r, g, b = pixels[i, j]
+            if j % 2 == 0:
+                r, g = g, r
+            if (i + j) % shift == 0:
+                r, b = b, r
+            pixels[i, j] = [r, g, b]
+
+    encrypted_image = Image.fromarray(pixels)
+    return encrypted_image
+
+def decrypt_image(encrypted_image_path, shift):
+    encrypted_image = Image.open(encrypted_image_path)
+    pixels = np.array(encrypted_image)
+    height, width, channels = pixels.shape
+
+    for i in range(height):
+        for j in range(width):
+            r, g, b = pixels[i, j]
+            if j % 2 == 0:
+                g, r = r, g
+            if (i + j) % shift == 0:
+                b, r = r, b
+            pixels[i, j] = [r, g, b]
+
+    decrypted_image = Image.fromarray(pixels)
+    return decrypted_image
+
+def main():
+    input_image_path = "input.png"
+    encrypted_image_path = "encrypted.png"
+    shift = 3
+
+    # Encrypt the image
+    encrypted_image = encrypt_image(input_image_path, shift)
+    encrypted_image.save(encrypted_image_path)
+
+    # Decrypt the image
+    decrypted_image = decrypt_image(encrypted_image_path, shift)
+    decrypted_image.show()
+
+if __name__ == "__main__":
+    main()

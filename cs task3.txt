@@ -1,0 +1,51 @@
+import string
+
+def password_strength(password):
+    strength = {'length': 0, 'uppercase': 0, 'lowercase': 0, 'digits': 0, 'special chars': 0, 'score': 0}
+
+    # Length
+    if len(password) >= 16:
+        strength['length'] = 3
+    elif len(password) >= 12:
+        strength['length'] = 2
+    elif len(password) >= 8:
+        strength['length'] = 1
+
+    # Uppercase letters
+    if any(c.isupper() for c in password):
+        strength['uppercase'] = 1
+
+    # Lowercase letters
+    if any(c.islower() for c in password):
+        strength['lowercase'] = 1
+
+    # Digits
+    if any(c.isdigit() for c in password):
+        strength['digits'] = 1
+
+    # Special characters
+    special_chars = set(string.punctuation)
+    if any(c in special_chars for c in password):
+        strength['special chars'] = 1
+
+    # Score
+    strength['score'] = sum(strength.values()) - 1
+
+    # Feedback
+    if strength['score'] == 0:
+        feedback = "Very weak password, consider making changes for better security."
+    elif strength['score'] == 1:
+        feedback = "Weak password, consider making changes for better security."
+    elif strength['score'] == 2:
+        feedback = "Moderate password, consider adding more complexity."
+    elif strength['score'] == 3:
+        feedback = "Strong password, but consider adding more complexity for better security."
+    elif strength['score'] >= 4:
+        feedback = "Very strong password, well done!"
+
+    return strength, feedback
+
+# Example usage
+password = input("Enter a password to assess its strength: ")
+strength, feedback = password_strength(password)
+print(feedback)
